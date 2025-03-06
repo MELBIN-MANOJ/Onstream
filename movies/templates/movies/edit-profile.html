@@ -1,0 +1,349 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - OnStream</title>
+    <link rel="stylesheet" href="{% static 'movies/style.css' %}">
+    <style>
+        .footer {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 3rem 1rem 1rem;
+            margin-top: 3rem;
+        }
+        
+        .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+        }
+        
+        .footer-logo h2 {
+            font-size: 2rem;
+            margin: 0;
+            background: linear-gradient(45deg, orangered, orange);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .footer-section h3 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent-color);
+        }
+        
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #333;
+            padding-top: 1.5rem;
+            margin-top: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .social-links a {
+            color: #ccc;
+            margin-left: 1rem;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--accent-color);
+        }
+        
+        @media (max-width: 768px) {
+            .footer-container {
+                flex-direction: column;
+            }
+            
+            .footer-section {
+                margin-bottom: 1.5rem;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .social-links {
+                margin-top: 1rem;
+            }
+            
+            .social-links a {
+                margin: 0 0.5rem;
+            }
+        }
+
+        .edit-profile-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: black; /* Changed from white to black */
+            color: white; /* Added to make text visible on black background */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+
+        .profile-edit-title {
+            text-align: center;
+            color: var(--accent-color);
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, orangered, orange);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .profile-pic-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .profile-pic-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 3px solid var(--accent-color);
+        }
+        .edit-profile-form input::placeholder {
+            color: #ccc; /* Light placeholder text */
+        }
+
+        .edit-profile-form input {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #333; /* Darker input background */
+            color: white; /* Light text color */
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, orangered, orange);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .back-button {
+            display: inline-block;
+            margin: 20px;
+            padding: 10px 15px;
+            background-color: orange;
+            color: white;
+            text-decoration: none;
+            border: 0;
+            border-radius: 50px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>OnStream</h1>
+            </div>
+            <div class="content-type-toggle">
+                <!-- Movies and TV Shows buttons will be inserted here by JavaScript -->
+            </div>
+        </nav>
+    </header>
+
+    <a href="{% url 'index' %}" class="back-button">← Back</a>
+
+    <div class="container">
+        <div class="edit-profile-container">
+            <h1 class="profile-edit-title">Profile Edit</h1>
+            <form id="edit-profile-form" class="edit-profile-form" enctype="multipart/form-data">                <div class="profile-pic-upload">
+                    <img id="profile-pic-preview" src="{% static 'movies/default-profile.png' %}" class="profile-pic-preview" alt="Profile Picture">
+                    <input type="file" id="profile-pic" name="profile_pic" accept="image/*">
+                </div>
+                <input type="text" id="username" name="username" placeholder="Username" required>
+                <input type="email" id="email" name="email" placeholder="Email" required>
+                <button type="submit" class="submit-btn">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <div class="footer-logo">
+                    <h2>OnStream</h2>
+                </div>
+                <p>Your ultimate destination for movies and TV shows</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Navigation</h3>
+                <ul class="footer-links">
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li><a href="#movies">Movies</a></li>
+                    <li><a href="#tvshows">TV Shows</a></li>
+                    <li><a href="#search">Search</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Account</h3>
+                <ul class="footer-links">
+                    <li><a href="{% url 'login_page' %}">Login</a></li>
+                    <li><a href="{% url 'register_page' %}">Register</a></li>
+                    <li><a href="edit-profile/">My Profile</a></li>
+                    <li><a href="favourites/">My Watchlist</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Support</h3>
+                <ul class="footer-links">
+                    <li><a href="#faq">FAQs</a></li>
+                    <li><a href="#help">Help Center</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                    <li><a href="#terms">Terms of Service</a></li>
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 OnStream. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fa fa-twitter"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fa fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Add Font Awesome for social icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <script src="{% static 'movies/script.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('edit-profile-form');
+    const profilePicInput = document.getElementById('profile-pic');
+    const profilePicPreview = document.getElementById('profile-pic-preview');
+    const usernameInput = document.getElementById('username');
+    const emailInput = document.getElementById('email');
+
+    // Populate existing data
+    usernameInput.value = localStorage.getItem('username') || '';
+    emailInput.value = localStorage.getItem('email') || '';
+
+    // Load saved profile picture if it exists
+    const savedProfilePic = localStorage.getItem('profilePicture');
+    if (savedProfilePic) {
+        profilePicPreview.src = savedProfilePic;
+    }
+
+    // Profile picture preview
+    profilePicInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                profilePicPreview.src = e.target.result;
+                // Save the profile picture to localStorage
+                localStorage.setItem('profilePicture', e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(form);
+
+        // Save current form data
+        const currentProfilePic = profilePicPreview.src;
+        const currentUsername = usernameInput.value;
+        const currentEmail = emailInput.value;
+
+        fetch('/api/update-profile/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Token ${localStorage.getItem('token')}`
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.username) {
+                localStorage.setItem('username', currentUsername);
+                localStorage.setItem('email', currentEmail);
+                localStorage.setItem('profilePicture', currentProfilePic);
+                alert('Profile updated successfully!');
+            } else {
+                alert('Error updating profile');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred');
+        });
+
+        // Prevent the form from actually submitting and refreshing the page
+        return false;
+    });
+
+    // Optional: Add a function to handle page refresh
+    window.onbeforeunload = function() {
+        localStorage.setItem('profilePicture', profilePicPreview.src);
+    };
+});
+    </script>
+</body>
+</html>

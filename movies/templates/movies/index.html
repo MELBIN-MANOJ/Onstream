@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'movies/style.css' %}">
+    <title>OnStream</title>
+    <style>
+        .chatbot-toggle {
+    background: linear-gradient(45deg, orangered, orange);
+            color: white;
+            text-decoration: none;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .chatbot-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.2);
+        }
+        .profile-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, orangered, orange);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: white;
+            min-width: 180px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            z-index: 1000;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 10px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>OnStream</h1>
+            </div>
+            <div class="content-type-toggle">
+                <a href="{% url 'chatbot_page' %}" class="chatbot-toggle">OnStream AI</a>
+                <button id="movie-toggle" class="content-toggle active">Movies</button>
+                <button id="tv-toggle" class="content-toggle">TV Shows</button>
+            </div>
+            <form id="form">
+                <input type="text" placeholder="Search" id="search" class="search">
+            </form>
+            <div class="user-controls">
+                <div class="profile-container">
+                    <div id="profile-icon" class="profile-icon">U</div>
+                    <div id="profile-dropdown" class="dropdown-menu">
+                        <a href="/edit-profile">Edit Profile</a>
+                        <a href="/favourites">Favourites/Watchlist</a>
+                        <a href="#" id="logout-link">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="tags"></div>
+    <div id="myNav" class="overlay">
+        <!-- Button to close the overlay navigation -->
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      
+        <!-- Overlay content -->
+        <div class="overlay-content" id="overlay-content"></div>
+        
+        <a href="javascript:void(0)" class="arrow left-arrow" id="left-arrow">&#8656;</a> 
+        
+        <a href="javascript:void(0)" class="arrow right-arrow" id="right-arrow" >&#8658;</a>
+    </div>
+    <main id="main"></main>
+    <div class="pagination">
+        <div class="page" id="prev">Previous Page</div>
+        <div class="current" id="current">1</div>
+        <div class="page" id="next">Next Page</div>
+    </div>
+
+    <script src="{% static 'movies/script.js' %}"></script>
+    <script>
+        // Profile dropdown toggle
+        const profileIcon = document.getElementById('profile-icon');
+        const profileDropdown = document.getElementById('profile-dropdown');
+
+        profileIcon.addEventListener('click', function() {
+            profileDropdown.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!profileIcon.contains(event.target) && !profileDropdown.contains(event.target)) {
+                profileDropdown.classList.remove('show');
+            }
+        });
+
+        // Logout functionality
+        document.getElementById('logout-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            // Clear authentication data from localStorage
+            localStorage.removeItem('token');
+            localStorage.removeItem('user_id');
+            localStorage.removeItem('username');
+            
+            // Redirect to login page
+            window.location.href = '/';
+        });
+
+        // Update profile icon with user's initial
+        document.addEventListener('DOMContentLoaded', function() {
+            const username = localStorage.getItem('username');
+            if (username) {
+                document.getElementById('profile-icon').textContent = username.charAt(0).toUpperCase();
+            }
+        });
+    </script>
+    <!-- Footer Section -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <div class="footer-logo">
+                <h2>OnStream</h2>
+            </div>
+            <p>Your ultimate destination for movies and TV shows</p>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Navigation</h3>
+            <ul class="footer-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#movies">Movies</a></li>
+                <li><a href="#tvshows">TV Shows</a></li>
+                <li><a href="#search">Search</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Account</h3>
+            <ul class="footer-links">
+                <li><a href="login.html">Login</a></li>
+                <li><a href="register.html">Register</a></li>
+                <li><a href="edit-profile/">My Profile</a></li>
+                <li><a href="favourites/">My Watchlist</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Support</h3>
+            <ul class="footer-links">
+                <li><a href="#faq">FAQs</a></li>
+                <li><a href="#help">Help Center</a></li>
+                <li><a href="#contact">Contact Us</a></li>
+                <li><a href="#terms">Terms of Service</a></li>
+                <li><a href="#privacy">Privacy Policy</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <p>&copy; 2025 OnStream. All rights reserved.</p>
+        <div class="social-links">
+            <a href="#" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fa fa-twitter"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa fa-instagram"></i></a>
+        </div>
+    </div>
+</footer>
+
+<!-- Add Font Awesome for social icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<!-- CSS for Footer -->
+<style>
+    .footer {
+        background-color: var(--secondary-color);
+        color: white;
+        padding: 3rem 1rem 1rem;
+        margin-top: 3rem;
+    }
+    
+    .footer-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .footer-section {
+        flex: 1;
+        min-width: 200px;
+        margin-bottom: 2rem;
+        padding: 0 1rem;
+    }
+    
+    .footer-logo h2 {
+        font-size: 2rem;
+        margin: 0;
+        background: linear-gradient(45deg, orangered, orange);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .footer-section h3 {
+        color: var(--accent-color);
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+    }
+    
+    .footer-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .footer-links li {
+        margin-bottom: 0.5rem;
+    }
+    
+    .footer-links a {
+        color: #ccc;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+    
+    .footer-links a:hover {
+        color: var(--accent-color);
+    }
+    
+    .footer-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #333;
+        padding-top: 1.5rem;
+        margin-top: 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .social-links a {
+        color: #ccc;
+        margin-left: 1rem;
+        font-size: 1.2rem;
+        transition: color 0.3s;
+    }
+    
+    .social-links a:hover {
+        color: var(--accent-color);
+    }
+    
+    @media (max-width: 768px) {
+        .footer-container {
+            flex-direction: column;
+        }
+        
+        .footer-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-bottom {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .social-links {
+            margin-top: 1rem;
+        }
+        
+        .social-links a {
+            margin: 0 0.5rem;
+        }
+    }
+</style>
+</body>
+</html>

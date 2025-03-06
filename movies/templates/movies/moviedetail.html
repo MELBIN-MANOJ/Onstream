@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Details - OnStream</title>
+    <link rel="stylesheet" href="{% static 'movies/style.css' %}">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>OnStream</h1>
+            </div>
+            <div class="content-type-toggle">
+                <!-- Movies and TV Shows buttons will be inserted here by JavaScript -->
+            </div>
+        </nav>
+    </header>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin: 1rem;">
+        <a href="index.html" class="back-button">← Back</a>
+        <button id="favorite-btn" class="favorite-btn">
+            <i class="fas fa-heart"></i>
+        </button>
+    </div>
+
+    <div class="container">
+        <h1 id="movie-title"></h1>
+
+        <div class="movie-details-container">
+            <div class="movie-poster-container">
+                <!-- Poster will be added here -->
+            </div>
+
+            <div class="movie-info-container">
+                <!-- Movie details will be added here -->
+            </div>
+        </div>
+
+        <div id="video-container"></div>
+
+        <div class="cast-container">
+            <h2>Cast</h2>
+            <div id="cast-list"></div>
+        </div>
+    </div>
+
+    <script src="{% static 'movies/script.js' %}">
+    </script>
+    <!-- Add this script before closing body tag -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const favoriteBtn = document.getElementById('favorite-btn');
+    
+    // Check if item is already in favorites
+    function isInFavorites(id) {
+        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        return favorites.some(item => item.id === id);
+    }
+
+    // Update button state
+    function updateFavoriteButton(id) {
+        if (isInFavorites(id)) {
+            favoriteBtn.classList.add('active');
+            favoriteBtn.title = 'Remove from Favorites';
+        } else {
+            favoriteBtn.classList.remove('active');
+            favoriteBtn.title = 'Add to Favorites';
+        }
+    }
+
+    // Toggle favorite
+    favoriteBtn.addEventListener('click', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = parseInt(urlParams.get('id'));
+        const type = urlParams.get('type');
+        
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        
+        if (isInFavorites(id)) {
+            // Remove from favorites
+            favorites = favorites.filter(item => item.id !== id);
+            favoriteBtn.classList.remove('active');
+        } else {
+            // Add to favorites
+            favorites.push({
+                id: id,
+                title: document.getElementById('movie-title').textContent,
+                poster_path: document.querySelector('.movie-poster-container img').src.split('/w500')[1],
+                type: type
+            });
+            favoriteBtn.classList.add('active');
+        }
+        
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        
+        // Add click animation
+        favoriteBtn.style.transform = 'scale(1.2)';
+        setTimeout(() => {
+            favoriteBtn.style.transform = 'scale(1)';
+        }, 200);
+    });
+
+    // Initial button state
+    const id = parseInt(new URLSearchParams(window.location.search).get('id'));
+    if (id) {
+        updateFavoriteButton(id);
+    }
+});
+</script>
+    <style>
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    
+        .favorite-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    
+        .favorite-btn i {
+            color: #808080; /* Default gray color */
+            transition: all 0.3s ease;
+        }
+    
+        .favorite-btn.active i {
+            color: #ff0000 !important; /* Bright red color when active */
+        }
+    
+        .favorite-btn:hover {
+            transform: scale(1.1);
+        }
+    
+        .favorite-btn:hover i {
+            color: #ff0000; /* Red color on hover */
+        }
+    
+        .back-button {
+            display: inline-block;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+    <!-- Footer Section -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <div class="footer-logo">
+                <h2>OnStream</h2>
+            </div>
+            <p>Your ultimate destination for movies and TV shows</p>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Navigation</h3>
+            <ul class="footer-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#movies">Movies</a></li>
+                <li><a href="#tvshows">TV Shows</a></li>
+                <li><a href="#search">Search</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Account</h3>
+            <ul class="footer-links">
+                <li><a href="login.html">Login</a></li>
+                <li><a href="register.html">Register</a></li>
+                <li><a href="edit-profile/">My Profile</a></li>
+                <li><a href="favourites/">My Watchlist</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Support</h3>
+            <ul class="footer-links">
+                <li><a href="#faq">FAQs</a></li>
+                <li><a href="#help">Help Center</a></li>
+                <li><a href="#contact">Contact Us</a></li>
+                <li><a href="#terms">Terms of Service</a></li>
+                <li><a href="#privacy">Privacy Policy</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <p>&copy; 2025 OnStream. All rights reserved.</p>
+        <div class="social-links">
+            <a href="#" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fa fa-twitter"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa fa-instagram"></i></a>
+        </div>
+    </div>
+</footer>
+
+<!-- Add Font Awesome for social icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<!-- CSS for Footer -->
+<style>
+
+.favorite-btn {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        transition: all 0.3s;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .favorite-btn i {
+        color: #808080; /* Gray color for idle state */
+        transition: all 0.3s;
+    }
+
+    .favorite-btn:hover i {
+        transform: scale(1.1);
+    }
+
+    .favorite-btn.active i {
+        color: #ff4444; /* Red color for active state */
+    }
+
+    .back-button {
+        display: inline-block;
+        margin: 1rem;
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+    }
+
+    /* Container for back button and favorite button */
+    .nav-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .footer {
+        background-color: var(--secondary-color);
+        color: white;
+        padding: 3rem 1rem 1rem;
+        margin-top: 3rem;
+    }
+    
+    .footer-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .footer-section {
+        flex: 1;
+        min-width: 200px;
+        margin-bottom: 2rem;
+        padding: 0 1rem;
+    }
+    
+    .footer-logo h2 {
+        font-size: 2rem;
+        margin: 0;
+        background: linear-gradient(45deg, orangered, orange);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .footer-section h3 {
+        color: var(--accent-color);
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+    }
+    
+    .footer-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .footer-links li {
+        margin-bottom: 0.5rem;
+    }
+    
+    .footer-links a {
+        color: #ccc;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+    
+    .footer-links a:hover {
+        color: var(--accent-color);
+    }
+    
+    .footer-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #333;
+        padding-top: 1.5rem;
+        margin-top: 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .social-links a {
+        color: #ccc;
+        margin-left: 1rem;
+        font-size: 1.2rem;
+        transition: color 0.3s;
+    }
+    
+    .social-links a:hover {
+        color: var(--accent-color);
+    }
+    
+    @media (max-width: 768px) {
+        .footer-container {
+            flex-direction: column;
+        }
+        
+        .footer-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-bottom {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .social-links {
+            margin-top: 1rem;
+        }
+        
+        .social-links a {
+            margin: 0 0.5rem;
+        }
+    }
+</style>
+</body>
+</html>
