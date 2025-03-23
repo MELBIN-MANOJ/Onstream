@@ -1,0 +1,888 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;700&display=swap');
+
+*{
+    box-sizing: border-box;
+}
+
+:root{
+    --primary-color:#0f0f0f;
+    --secondary-color: Black;
+}
+
+body{
+    background-color: var(--primary-color);
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+}
+
+
+header{
+    padding:1rem;
+    display:flex;
+    justify-content: flex-end;
+    background-color: var(--secondary-color);
+}
+
+.search{
+    background-color: transparent;
+    border: 2px solid var(--primary-color);
+    padding:0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    color:#fff;
+    font-family: inherit;
+}
+
+.search:focus{
+    outline: 2px;;
+    background-color: var(--primary-color);
+}
+
+.search::placeholder{
+    color: #fff;
+}
+
+main{
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.movie {
+    width: 300px;
+    margin: 1rem;
+    border-radius: 3px;
+    box-shadow: 0.2px 4px 5px rgba(0,0,0,0.1);
+    background-color: var(--secondary-color);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer; /* Add cursor pointer to indicate it's clickable */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.movie:hover {
+    transform: translateY(-5px); /* Slight lift effect on hover */
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2); /* Enhanced shadow on hover */
+}
+
+.movie img{
+    width:100%;
+}
+
+.movie-info{
+    color:#eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem 1rem;
+    letter-spacing: 0.5px;
+}
+
+.movie-info h3{
+    margin-top: 0;
+}
+
+.movie-info span{
+    background-color: var(--primary-color);
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.movie-info span.green{
+    color:lightgreen;
+}
+
+.movie-info span.orange{
+    color:orange;
+}
+
+.movie-info span.red{
+    color:red;
+}
+
+.overview{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    background-color: #fff;
+    padding: 1rem;
+    max-height: 100%;
+    transform:translateY(101%);
+    transition:transform 0.3s ease-in;
+}
+
+.movie:hover .overview{
+    transform:translateY(0)
+}
+
+#tags {
+    width: 80%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin: 10px auto;
+}
+
+/* Default tag styling */
+.tag {
+    color: white;
+    padding: 10px 20px;
+    background-color: orange; /* Solid background */
+    border-radius: 50px;
+    margin: 5px;
+    display: inline-block;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover effect */
+.tag:hover {
+    transform: scale(1.1); /* Slightly enlarge */
+    box-shadow: 0 4px 10px rgba(255, 140, 0, 0.5); /* Soft glow */
+}
+
+/* Active (clicked) effect */
+.tag:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 5px rgba(255, 140, 0, 0.3);
+}
+
+/* Highlighted tag */
+.tag.highlight {
+    background-color: #555;
+}
+
+/* Hover effect for highlighted tag */
+.tag.highlight:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+
+
+.no-results{
+    color:white;
+}
+
+.pagination{
+    display:flex;
+    margin:10px 30px;
+    align-items: center;
+    justify-content: center;
+    color:white;
+}
+
+.page{
+    padding:20px;
+    cursor:pointer;
+}
+
+.page.disabled{
+    cursor:not-allowed;
+    color:grey;
+}
+
+.current{
+    padding: 10px 20px;
+    border-radius: 50%;
+    border: 5px solid orange;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.know-more{
+    background-color: orange;
+    color:white;
+    font-size: 16px;
+    font-weight: bold;
+    border:0;
+    border-radius: 50px;
+    padding: 10px 20px;
+    margin-top: 5px;
+}
+/* The Overlay (background) */
+.overlay {
+    /* Height & width depends on how you want to reveal the overlay (see JS below) */   
+    height: 100%;
+    width: 0;
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    background-color: rgb(0,0,0); /* Black fallback color */
+    background-color: rgba(0,0,0, 0.9); /* Black w/opacity */
+    overflow-x: hidden; /* Disable horizontal scroll */
+    transition: 0.5s; /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
+  }
+  
+  /* Position the content inside the overlay */
+  .overlay-content {
+    position: relative;
+    top: 10%; /* 25% from the top */
+    width: 100%; /* 100% width */
+    text-align: center; /* Centered text/links */
+    margin-top: 30px; /* 30px top margin to avoid conflict with the close button on smaller screens */
+  }
+  
+  /* The navigation links inside the overlay */
+  .overlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: #818181;
+    display: block; /* Display block instead of inline */
+    transition: 0.3s; /* Transition effects on hover (color) */
+  }
+  
+  /* When you mouse over the navigation links, change their color */
+  .overlay a:hover, .overlay a:focus {
+    color: #f1f1f1;
+  }
+  
+  /* Position the close button (top right corner) */
+  .overlay .closebtn {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+    font-size: 60px;
+  }
+  
+  /* When the height of the screen is less than 450 pixels, change the font-size of the links and position the close button again, so they don't overlap */
+  @media screen and (max-height: 450px) {
+    .overlay a {font-size: 20px}
+    .overlay .closebtn {
+      font-size: 40px;
+      top: 15px;
+      right: 35px;
+    }
+  }
+
+
+  .embed.hide{
+      display: none;
+  }
+
+  .embed.show{
+      display: inline-block;
+  }
+
+  .arrow{
+      position: absolute;
+      font-size: 40px;
+  }
+
+  .arrow.left-arrow{
+      top:50%;
+      left:5%;
+      transform: translateY(-50%);
+  }
+
+  
+  .arrow.right-arrow{
+    top:50%;
+    transform: translateY(-50%);
+    right:5%;
+}
+
+.dots{
+    margin-top: 30px;
+}
+
+.dots .dot {
+    padding: 5px 15px;
+    border-radius: 50%;
+    border: 5px solid var(--secondary-color);
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 5px;
+}
+
+.dots .dot.active{
+    border-color: orange;
+}
+
+.back-button {
+    display: inline-block;
+    margin: 20px;
+    padding: 10px 15px;
+    background-color: orange;
+    color: white;
+    text-decoration: none;
+    border: 0;
+    border-radius: 50px;
+}
+
+.container {
+    width: 200%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    color: white;
+}
+
+#video-container {
+    margin: 40px 0;
+}
+
+.navigation {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.arrow {
+    cursor: pointer;
+    padding: 10px 15px;
+    margin: 0 10px;
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+}
+
+.back-button:hover {
+    background-color: #555;
+}
+
+#movie-title {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+}
+
+/* Movie details container */
+.movie-details-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.movie-poster-container {
+    flex: 0 0 300px;
+}
+
+.movie-poster {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.movie-info-container {
+    flex: 1;
+    min-width: 300px;
+}
+
+.rating {
+    margin-bottom: 20px;
+}
+
+.rating span {
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: white;
+}
+
+.green {
+    background-color: #21d07a;
+}
+
+.orange {
+    background-color: #d2d531;
+}
+
+.red {
+    background-color: #db2360;
+}
+
+.movie-metadata {
+    margin-bottom: 20px;
+}
+
+.movie-metadata p {
+    margin: 10px 0;
+    font-size: 1.1rem;
+    font-style: italic;
+}
+
+.movie-overview h3 {
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+.movie-overview p {
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+/* Trailer container */
+.trailer-container {
+    margin: 40px 0;
+}
+
+.trailer-container h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
+
+/* Cast section */
+.cast-container {
+    margin: 40px 0;
+}
+
+.cast-container h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
+
+#cast-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.cast-member {
+    background-color: #f8f8f8;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.cast-member:hover {
+    transform: translateY(-10px);
+}
+
+.cast-image {
+    width: 100%;
+    height: 225px;
+    object-fit: cover;
+}
+
+.cast-details {
+    padding: 10px;
+    background: transparent;
+}
+
+.cast-details h4 {
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.cast-details p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #777;
+}
+
+/* Error and no results messages */
+.error, .no-results {
+    text-align: center;
+    color: #db2360;
+    font-size: 1.2rem;
+    margin: 20px 0;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .navbar {
+        flex-wrap: wrap;
+    }
+    
+    .content-type-toggle {
+        order: 2;
+        margin: 10px auto;
+    }
+    
+    #form {
+        order: 3;
+        width: 100%;
+        margin-top: 10px;
+        text-align: center;
+    }
+}
+
+.content-type-toggle {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+  }
+  
+  .content-toggle {
+    padding: 10px 20px;
+    background: linear-gradient(45deg, #ff8c00, #ff4500); /* Smooth gradient */
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 10px rgba(255, 140, 0, 0.3); /* Subtle shadow */
+    outline: none;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hover effect */
+.content-toggle:hover {
+    background: linear-gradient(45deg, #ff4500, #ff8c00); /* Reverse gradient */
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0 6px 15px rgba(255, 69, 0, 0.5);
+}
+
+/* Active (clicked) effect */
+.content-toggle:active {
+    transform: scale(0.95);
+    box-shadow: 0 3px 8px rgba(255, 69, 0, 0.4);
+}
+
+/* Active state */
+.content-toggle.active {
+    background: linear-gradient(45deg, #444, #222);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    width: 100%;
+}
+
+/* Position the content-type-toggle to be on the right next to search */
+.content-type-toggle {
+    display: flex;
+    margin: 0 15px 0 auto; /* Push to right while giving space to search */
+    gap: 10px;
+}
+#form {
+    margin: 0;
+}
+
+.backdrop-gallery {
+    margin: 2rem 0;
+}
+
+.backdrop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.backdrop-item {
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s;
+    cursor: pointer;
+}
+
+.backdrop-item:hover {
+    transform: scale(1.03);
+}
+
+.backdrop-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.backdrop-modal {
+    display: flex;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    align-items: center;
+    justify-content: center;
+}
+
+.backdrop-modal-content {
+    max-width: 90%;
+    max-height: 90%;
+    position: relative;
+}
+
+.backdrop-modal-content img {
+    max-width: 100%;
+    max-height: 90vh;
+    display: block;
+}
+
+.backdrop-close {
+    position: absolute;
+    top: -30px;
+    right: 0;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Logo container */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between icon and text */
+}
+
+/* Material symbol (stream icon) styling */
+.material-symbols-outlined {
+    font-size: 2.5rem; /* Match logo text size */
+    background: linear-gradient(45deg, orangered, orange);
+    background-clip: inherit;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: smoothBlink 2s infinite alternate ease-in-out;
+}
+
+/* OnStream logo styling and animation */
+.logo h1 {
+    margin: 0;
+    font-family: 'Arsenal SC', serif;
+    font-size: 2.5rem;
+    position: relative;
+    display: inline-block;
+    background: linear-gradient(45deg, orangered, orange);
+    background-clip: inherit;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: smoothBlink 2s infinite alternate ease-in-out;
+}
+
+/* Smooth blink animation */
+@keyframes smoothBlink {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+}
+
+
+.user-controls {
+    margin-left: 15px;
+}
+
+.logout-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 10px black;
+}
+
+.logout-btn:hover {
+    background-color: red;
+    transform: translateY(-3px);
+}
+
+.poster-carousel {
+    position: relative;
+    overflow: hidden;
+}
+
+.poster-carousel img {
+    width: 100%;
+    height: auto;
+    transition: opacity 0.5s ease-in-out;
+}
+
+
+
+/* Cast Detail Page Styles */
+.person-details-container {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.person-image-container {
+    flex: 0 0 300px;
+}
+
+.person-image-container img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.person-info-container {
+    flex: 1;
+    color: #fff;
+}
+
+.person-info-container h1 {
+    margin: 0 0 1rem 0;
+    background: linear-gradient(45deg, orangered, orange);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.biography {
+    margin-top: 1rem;
+    line-height: 1.6;
+}
+
+.biography h3 {
+    color: orange;
+    margin-bottom: 0.5rem;
+}
+
+.filmography-container {
+    padding: 1rem;
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    margin-top: 2rem;
+}
+
+.filmography-container h2 {
+    color: orange;
+    margin-bottom: 1.5rem;
+}
+
+.toggle-buttons {
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.toggle-btn {
+    padding: 0.5rem 1.5rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    background: linear-gradient(45deg, #333, #444);
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.toggle-btn.active {
+    background: linear-gradient(45deg, orangered, orange);
+}
+
+#filmography-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+}
+
+.filmography-item {
+    background-color: var(--secondary-color);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.filmography-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+.filmography-item img {
+    width: 100%;
+    height: auto;
+}
+
+.filmography-info {
+    padding: 1rem;
+    color: white;
+}
+
+.filmography-info h3 {
+    margin: 0;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.filmography-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+/* Responsive Design for Cast Detail Page */
+@media (max-width: 768px) {
+    .person-details-container {
+        flex-direction: column;
+    }
+
+    .person-image-container {
+        flex: 0 0 auto;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .toggle-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .toggle-btn {
+        width: 200px;
+        text-align: center;
+    }
+
+    #filmography-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+
+.cast-member {
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.cast-member:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.cast-details {
+    padding: 10px;
+    background-color: var(--secondary-color);
+}
+
+.cast-details h4 {
+    color: white;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.cast-details p {
+    color: #888;
+    margin: 5px 0 0;
+    font-size: 0.9rem;
+}

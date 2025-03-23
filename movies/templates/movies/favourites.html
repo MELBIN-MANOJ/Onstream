@@ -95,6 +95,895 @@
             padding: 2rem;
             font-size: 1.2rem;
         }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;700&display=swap');
+
+        *{
+            box-sizing: border-box;
+        }
+
+        :root{
+            --primary-color:#0f0f0f;
+            --secondary-color: Black;
+        }
+
+        body{
+            background-color: var(--primary-color);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+        }
+
+
+        header{
+            padding:1rem;
+            display:flex;
+            justify-content: flex-end;
+            background-color: var(--secondary-color);
+        }
+
+        .search{
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            padding:0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            color:#fff;
+            font-family: inherit;
+        }
+
+        .search:focus{
+            outline: 2px;;
+            background-color: var(--primary-color);
+        }
+
+        .search::placeholder{
+            color: #fff;
+        }
+
+        main{
+            display:flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .movie {
+            width: 300px;
+            margin: 1rem;
+            border-radius: 3px;
+            box-shadow: 0.2px 4px 5px rgba(0,0,0,0.1);
+            background-color: var(--secondary-color);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer; /* Add cursor pointer to indicate it's clickable */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        .movie:hover {
+            transform: translateY(-5px); /* Slight lift effect on hover */
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2); /* Enhanced shadow on hover */
+        }
+
+        .movie img{
+            width:100%;
+        }
+
+        .movie-info{
+            color:#eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 1rem 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .movie-info h3{
+            margin-top: 0;
+        }
+
+        .movie-info span{
+            background-color: var(--primary-color);
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .movie-info span.green{
+            color:lightgreen;
+        }
+
+        .movie-info span.orange{
+            color:orange;
+        }
+
+        .movie-info span.red{
+            color:red;
+        }
+
+        .overview{
+            position:absolute;
+            left:0;
+            right:0;
+            bottom:0;
+            background-color: #fff;
+            padding: 1rem;
+            max-height: 100%;
+            transform:translateY(101%);
+            transition:transform 0.3s ease-in;
+        }
+
+        .movie:hover .overview{
+            transform:translateY(0)
+        }
+
+        #tags {
+            width: 80%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin: 10px auto;
+        }
+
+        /* Default tag styling */
+        .tag {
+            color: white;
+            padding: 10px 20px;
+            background-color: orange; /* Solid background */
+            border-radius: 50px;
+            margin: 5px;
+            display: inline-block;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Hover effect */
+        .tag:hover {
+            transform: scale(1.1); /* Slightly enlarge */
+            box-shadow: 0 4px 10px rgba(255, 140, 0, 0.5); /* Soft glow */
+        }
+
+        /* Active (clicked) effect */
+        .tag:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 5px rgba(255, 140, 0, 0.3);
+        }
+
+        /* Highlighted tag */
+        .tag.highlight {
+            background-color: #555;
+        }
+
+        /* Hover effect for highlighted tag */
+        .tag.highlight:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+
+
+        .no-results{
+            color:white;
+        }
+
+        .pagination{
+            display:flex;
+            margin:10px 30px;
+            align-items: center;
+            justify-content: center;
+            color:white;
+        }
+
+        .page{
+            padding:20px;
+            cursor:pointer;
+        }
+
+        .page.disabled{
+            cursor:not-allowed;
+            color:grey;
+        }
+
+        .current{
+            padding: 10px 20px;
+            border-radius: 50%;
+            border: 5px solid orange;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .know-more{
+            background-color: orange;
+            color:white;
+            font-size: 16px;
+            font-weight: bold;
+            border:0;
+            border-radius: 50px;
+            padding: 10px 20px;
+            margin-top: 5px;
+        }
+        /* The Overlay (background) */
+        .overlay {
+            /* Height & width depends on how you want to reveal the overlay (see JS below) */   
+            height: 100%;
+            width: 0;
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            background-color: rgb(0,0,0); /* Black fallback color */
+            background-color: rgba(0,0,0, 0.9); /* Black w/opacity */
+            overflow-x: hidden; /* Disable horizontal scroll */
+            transition: 0.5s; /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
+        }
+        
+        /* Position the content inside the overlay */
+        .overlay-content {
+            position: relative;
+            top: 10%; /* 25% from the top */
+            width: 100%; /* 100% width */
+            text-align: center; /* Centered text/links */
+            margin-top: 30px; /* 30px top margin to avoid conflict with the close button on smaller screens */
+        }
+        
+        /* The navigation links inside the overlay */
+        .overlay a {
+            padding: 8px;
+            text-decoration: none;
+            font-size: 36px;
+            color: #818181;
+            display: block; /* Display block instead of inline */
+            transition: 0.3s; /* Transition effects on hover (color) */
+        }
+        
+        /* When you mouse over the navigation links, change their color */
+        .overlay a:hover, .overlay a:focus {
+            color: #f1f1f1;
+        }
+        
+        /* Position the close button (top right corner) */
+        .overlay .closebtn {
+            position: absolute;
+            top: 20px;
+            right: 45px;
+            font-size: 60px;
+        }
+        
+        /* When the height of the screen is less than 450 pixels, change the font-size of the links and position the close button again, so they don't overlap */
+        @media screen and (max-height: 450px) {
+            .overlay a {font-size: 20px}
+            .overlay .closebtn {
+            font-size: 40px;
+            top: 15px;
+            right: 35px;
+            }
+        }
+
+
+        .embed.hide{
+            display: none;
+        }
+
+        .embed.show{
+            display: inline-block;
+        }
+
+        .arrow{
+            position: absolute;
+            font-size: 40px;
+        }
+
+        .arrow.left-arrow{
+            top:50%;
+            left:5%;
+            transform: translateY(-50%);
+        }
+
+        
+        .arrow.right-arrow{
+            top:50%;
+            transform: translateY(-50%);
+            right:5%;
+        }
+
+        .dots{
+            margin-top: 30px;
+        }
+
+        .dots .dot {
+            padding: 5px 15px;
+            border-radius: 50%;
+            border: 5px solid var(--secondary-color);
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            margin: 5px;
+        }
+
+        .dots .dot.active{
+            border-color: orange;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin: 20px;
+            padding: 10px 15px;
+            background-color: orange;
+            color: white;
+            text-decoration: none;
+            border: 0;
+            border-radius: 50px;
+        }
+
+        .container {
+            width: 200%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: white;
+        }
+
+        #video-container {
+            margin: 40px 0;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .arrow {
+            cursor: pointer;
+            padding: 10px 15px;
+            margin: 0 10px;
+            background-color: #333;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .back-button:hover {
+            background-color: #555;
+        }
+
+        #movie-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+
+        /* Movie details container */
+        .movie-details-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .movie-poster-container {
+            flex: 0 0 300px;
+        }
+
+        .movie-poster {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .movie-info-container {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .rating {
+            margin-bottom: 20px;
+        }
+
+        .rating span {
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .green {
+            background-color: #21d07a;
+        }
+
+        .orange {
+            background-color: #d2d531;
+        }
+
+        .red {
+            background-color: #db2360;
+        }
+
+        .movie-metadata {
+            margin-bottom: 20px;
+        }
+
+        .movie-metadata p {
+            margin: 10px 0;
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+
+        .movie-overview h3 {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .movie-overview p {
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        /* Trailer container */
+        .trailer-container {
+            margin: 40px 0;
+        }
+
+        .trailer-container h2 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        /* Cast section */
+        .cast-container {
+            margin: 40px 0;
+        }
+
+        .cast-container h2 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        #cast-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .cast-member {
+            background-color: #f8f8f8;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .cast-member:hover {
+            transform: translateY(-10px);
+        }
+
+        .cast-image {
+            width: 100%;
+            height: 225px;
+            object-fit: cover;
+        }
+
+        .cast-details {
+            padding: 10px;
+            background: transparent;
+        }
+
+        .cast-details h4 {
+            margin: 0 0 5px 0;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .cast-details p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        /* Error and no results messages */
+        .error, .no-results {
+            text-align: center;
+            color: #db2360;
+            font-size: 1.2rem;
+            margin: 20px 0;
+        }
+
+        /* Responsive adjustments */
+        @media screen and (max-width: 768px) {
+            .navbar {
+                flex-wrap: wrap;
+            }
+            
+            .content-type-toggle {
+                order: 2;
+                margin: 10px auto;
+            }
+            
+            #form {
+                order: 3;
+                width: 100%;
+                margin-top: 10px;
+                text-align: center;
+            }
+        }
+
+        .content-type-toggle {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .content-toggle {
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #ff8c00, #ff4500); /* Smooth gradient */
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 10px rgba(255, 140, 0, 0.3); /* Subtle shadow */
+            outline: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Hover effect */
+        .content-toggle:hover {
+            background: linear-gradient(45deg, #ff4500, #ff8c00); /* Reverse gradient */
+            transform: translateY(-2px); /* Slight lift effect */
+            box-shadow: 0 6px 15px rgba(255, 69, 0, 0.5);
+        }
+
+        /* Active (clicked) effect */
+        .content-toggle:active {
+            transform: scale(0.95);
+            box-shadow: 0 3px 8px rgba(255, 69, 0, 0.4);
+        }
+
+        /* Active state */
+        .content-toggle.active {
+            background: linear-gradient(45deg, #444, #222);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        /* Position the content-type-toggle to be on the right next to search */
+        .content-type-toggle {
+            display: flex;
+            margin: 0 15px 0 auto; /* Push to right while giving space to search */
+            gap: 10px;
+        }
+        #form {
+            margin: 0;
+        }
+
+        .backdrop-gallery {
+            margin: 2rem 0;
+        }
+
+        .backdrop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .backdrop-item {
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .backdrop-item:hover {
+            transform: scale(1.03);
+        }
+
+        .backdrop-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .backdrop-modal {
+            display: flex;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .backdrop-modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+
+        .backdrop-modal-content img {
+            max-width: 100%;
+            max-height: 90vh;
+            display: block;
+        }
+
+        .backdrop-close {
+            position: absolute;
+            top: -30px;
+            right: 0;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Logo container */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between icon and text */
+        }
+
+        /* Material symbol (stream icon) styling */
+        .material-symbols-outlined {
+            font-size: 2.5rem; /* Match logo text size */
+            background: linear-gradient(45deg, orangered, orange);
+            background-clip: inherit;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: smoothBlink 2s infinite alternate ease-in-out;
+        }
+
+        /* OnStream logo styling and animation */
+        .logo h1 {
+            margin: 0;
+            font-family: 'Arsenal SC', serif;
+            font-size: 2.5rem;
+            position: relative;
+            display: inline-block;
+            background: linear-gradient(45deg, orangered, orange);
+            background-clip: inherit;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: smoothBlink 2s infinite alternate ease-in-out;
+        }
+
+        /* Smooth blink animation */
+        @keyframes smoothBlink {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
+
+        .user-controls {
+            margin-left: 15px;
+        }
+
+        .logout-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 10px black;
+        }
+
+        .logout-btn:hover {
+            background-color: red;
+            transform: translateY(-3px);
+        }
+
+        .poster-carousel {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .poster-carousel img {
+            width: 100%;
+            height: auto;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+
+
+        /* Cast Detail Page Styles */
+        .person-details-container {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .person-image-container {
+            flex: 0 0 300px;
+        }
+
+        .person-image-container img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .person-info-container {
+            flex: 1;
+            color: #fff;
+        }
+
+        .person-info-container h1 {
+            margin: 0 0 1rem 0;
+            background: linear-gradient(45deg, orangered, orange);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .biography {
+            margin-top: 1rem;
+            line-height: 1.6;
+        }
+
+        .biography h3 {
+            color: orange;
+            margin-bottom: 0.5rem;
+        }
+
+        .filmography-container {
+            padding: 1rem;
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+
+        .filmography-container h2 {
+            color: orange;
+            margin-bottom: 1.5rem;
+        }
+
+        .toggle-buttons {
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .toggle-btn {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            background: linear-gradient(45deg, #333, #444);
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .toggle-btn.active {
+            background: linear-gradient(45deg, orangered, orange);
+        }
+
+        #filmography-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem;
+        }
+
+        .filmography-item {
+            background-color: var(--secondary-color);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .filmography-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .filmography-item img {
+            width: 100%;
+            height: auto;
+        }
+
+        .filmography-info {
+            padding: 1rem;
+            color: white;
+        }
+
+        .filmography-info h3 {
+            margin: 0;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .filmography-info p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        /* Responsive Design for Cast Detail Page */
+        @media (max-width: 768px) {
+            .person-details-container {
+                flex-direction: column;
+            }
+
+            .person-image-container {
+                flex: 0 0 auto;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            .toggle-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .toggle-btn {
+                width: 200px;
+                text-align: center;
+            }
+
+            #filmography-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+
+        .cast-member {
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--secondary-color);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .cast-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .cast-details {
+            padding: 10px;
+            background-color: var(--secondary-color);
+        }
+
+        .cast-details h4 {
+            color: white;
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .cast-details p {
+            color: #888;
+            margin: 5px 0 0;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -157,6 +1046,715 @@
             favorites = favorites.filter(item => item.id !== id);
             localStorage.setItem('favorites', JSON.stringify(favorites));
             loadFavorites();
+        }
+
+        const API_KEY = 'api_key=67bc3a8942eb1cb931d8ef77bd4bf5bc';
+        const BASE_URL = 'https://api.themoviedb.org/3';
+        const MOVIE_API_URL = BASE_URL + '/discover/movie?sort_by=popularity.desc&'+API_KEY;
+        const TV_API_URL = BASE_URL + '/discover/tv?sort_by=popularity.desc&'+API_KEY;
+        const IMG_URL = 'https://image.tmdb.org/t/p/w500';
+        const MOVIE_SEARCH_URL = BASE_URL + '/search/movie?'+API_KEY;
+        const TV_SEARCH_URL = BASE_URL + '/search/tv?'+API_KEY;
+
+        // Set default content type
+        let currentContentType = 'movie'; // Options: 'movie' or 'tv'
+
+        // Check if we're on the detail page
+        const isDetailPage = window.location.pathname.includes('moviedetail.html');
+
+        // If we're on the main page, run the main page code
+        if (!isDetailPage) {
+            const genres = [
+                {
+                "id": 28,
+                "name": "Action"
+                },
+                {
+                "id": 12,
+                "name": "Adventure"
+                },
+                {
+                "id": 16,
+                "name": "Animation"
+                },
+                {
+                "id": 35,
+                "name": "Comedy"
+                },
+                {
+                "id": 80,
+                "name": "Crime"
+                },
+                {
+                "id": 99,
+                "name": "Documentary"
+                },
+                {
+                "id": 18,
+                "name": "Drama"
+                },
+                {
+                "id": 10751,
+                "name": "Family"
+                },
+                {
+                "id": 14,
+                "name": "Fantasy"
+                },
+                {
+                "id": 36,
+                "name": "History"
+                },
+                {
+                "id": 27,
+                "name": "Horror"
+                },
+                {
+                "id": 10402,
+                "name": "Music"
+                },
+                {
+                "id": 9648,
+                "name": "Mystery"
+                },
+                {
+                "id": 10749,
+                "name": "Romance"
+                },
+                {
+                "id": 878,
+                "name": "Science Fiction"
+                },
+                {
+                "id": 10770,
+                "name": "TV Movie"
+                },
+                {
+                "id": 53,
+                "name": "Thriller"
+                },
+                {
+                "id": 10752,
+                "name": "War"
+                },
+                {
+                "id": 37,
+                "name": "Western"
+                }
+            ];
+            
+            // TV genres from TMDb
+            const tvGenres = [
+                {
+                "id": 10759,
+                "name": "Action & Adventure"
+                },
+                {
+                "id": 16,
+                "name": "Animation"
+                },
+                {
+                "id": 35,
+                "name": "Comedy"
+                },
+                {
+                "id": 80,
+                "name": "Crime"
+                },
+                {
+                "id": 99,
+                "name": "Documentary"
+                },
+                {
+                "id": 18,
+                "name": "Drama"
+                },
+                {
+                "id": 10751,
+                "name": "Family"
+                },
+                {
+                "id": 10762,
+                "name": "Kids"
+                },
+                {
+                "id": 9648,
+                "name": "Mystery"
+                },
+                {
+                "id": 10763,
+                "name": "News"
+                },
+                {
+                "id": 10764,
+                "name": "Reality"
+                },
+                {
+                "id": 10765,
+                "name": "Sci-Fi & Fantasy"
+                },
+                {
+                "id": 10766,
+                "name": "Soap"
+                },
+                {
+                "id": 10767,
+                "name": "Talk"
+                },
+                {
+                "id": 10768,
+                "name": "War & Politics"
+                },
+                {
+                "id": 37,
+                "name": "Western"
+                }
+            ];
+            
+            const main = document.getElementById('main');
+            const form = document.getElementById('form');
+            const search = document.getElementById('search');
+            const tagsEl = document.getElementById('tags');
+            
+            // Content type toggle elements
+            const contentTypeContainer = document.createElement('div');
+            contentTypeContainer.className = 'content-type-toggle';
+            document.querySelector('header').appendChild(contentTypeContainer);
+            
+            // Find the section in your script.js where you create the toggle buttons and replace it with:
+
+        // Content type toggle elements - using existing buttons from HTML
+        const movieToggle = document.getElementById('movie-toggle');
+        const tvToggle = document.getElementById('tv-toggle');
+
+        // Set default content type
+        let currentContentType = 'movie'; // Options: 'movie' or 'tv'
+
+        // Add event listeners to toggle buttons
+        movieToggle.addEventListener('click', () => switchContentType('movie'));
+        tvToggle.addEventListener('click', () => switchContentType('tv'));
+
+        // Function to switch between content types
+        function switchContentType(type) {
+            currentContentType = type;
+            
+            // Update active toggle button
+            if (type === 'movie') {
+                movieToggle.classList.add('active');
+                tvToggle.classList.remove('active');
+            } else {
+                movieToggle.classList.remove('active');
+                tvToggle.classList.add('active');
+            }
+            
+            // Reset search and filters
+            selectedGenre = [];
+            search.value = '';
+            
+            // Update genre tags based on content type
+            setGenre();
+            
+            // Load appropriate content
+            if (type === 'movie') {
+                getContent(MOVIE_API_URL);
+            } else {
+                getContent(TV_API_URL);
+            }
+        }
+            
+            const prev = document.getElementById('prev')
+            const next = document.getElementById('next')
+            const current = document.getElementById('current')
+            
+            var currentPage = 1;
+            var nextPage = 2;
+            var prevPage = 3;
+            var lastUrl = '';
+            var totalPages = 100;
+            
+            var selectedGenre = []
+            setGenre();
+            
+            function setGenre() {
+                tagsEl.innerHTML = '';
+                
+                // Choose the appropriate genre list based on content type
+                const activeGenres = currentContentType === 'movie' ? genres : tvGenres;
+                
+                activeGenres.forEach(genre => {
+                    const t = document.createElement('div');
+                    t.classList.add('tag');
+                    t.id = genre.id;
+                    t.innerText = genre.name;
+                    t.addEventListener('click', () => {
+                        if(selectedGenre.length == 0){
+                            selectedGenre.push(genre.id);
+                        } else {
+                            if(selectedGenre.includes(genre.id)){
+                                selectedGenre.forEach((id, idx) => {
+                                    if(id == genre.id){
+                                        selectedGenre.splice(idx, 1);
+                                    }
+                                })
+                            } else {
+                                selectedGenre.push(genre.id);
+                            }
+                        }
+                        console.log(selectedGenre);
+                        const baseApiUrl = currentContentType === 'movie' ? MOVIE_API_URL : TV_API_URL;
+                        getContent(baseApiUrl + '&with_genres='+encodeURI(selectedGenre.join(',')))
+                        highlightSelection()
+                    })
+                    tagsEl.append(t);
+                })
+            }
+            
+            function highlightSelection() {
+                const tags = document.querySelectorAll('.tag');
+                tags.forEach(tag => {
+                    tag.classList.remove('highlight')
+                })
+                clearBtn()
+                if(selectedGenre.length !=0){   
+                    selectedGenre.forEach(id => {
+                        const hightlightedTag = document.getElementById(id);
+                        if (hightlightedTag) { // Check if the tag exists
+                            hightlightedTag.classList.add('highlight');
+                        }
+                    })
+                }
+            }
+            
+            function clearBtn(){
+                let clearBtn = document.getElementById('clear');
+                if(clearBtn){
+                    clearBtn.classList.add('highlight')
+                } else {
+                    let clear = document.createElement('div');
+                    clear.classList.add('tag','highlight');
+                    clear.id = 'clear';
+                    clear.innerText = 'Clear x';
+                    clear.addEventListener('click', () => {
+                        selectedGenre = [];
+                        setGenre();
+                        const baseApiUrl = currentContentType === 'movie' ? MOVIE_API_URL : TV_API_URL;
+                        getContent(baseApiUrl);
+                    })
+                    tagsEl.append(clear);
+                }
+            }
+            
+            // Initial content load - start with movies
+            getContent(MOVIE_API_URL);
+            
+            function getContent(url) {
+                lastUrl = url;
+                fetch(url).then(res => res.json()).then(data => {
+                    console.log(data.results);
+                    if(data.results.length !== 0){
+                        showContent(data.results);
+                        currentPage = data.page;
+                        nextPage = currentPage + 1;
+                        prevPage = currentPage - 1;
+                        totalPages = data.total_pages;
+            
+                        current.innerText = currentPage;
+            
+                        if(currentPage <= 1){
+                            prev.classList.add('disabled');
+                            next.classList.remove('disabled')
+                        } else if(currentPage >= totalPages){
+                            prev.classList.remove('disabled');
+                            next.classList.add('disabled')
+                        } else {
+                            prev.classList.remove('disabled');
+                            next.classList.remove('disabled')
+                        }
+            
+                        tagsEl.scrollIntoView({behavior : 'smooth'})
+                    } else {
+                        main.innerHTML = `<h1 class="no-results">No Results Found</h1>`
+                    }
+                })
+            }
+            
+            function showContent(data) {
+                main.innerHTML = '';
+            
+                data.forEach(item => {
+                    // Handle both movie and TV show properties
+                    const title = item.title || item.name;
+                    const releaseDate = item.release_date || item.first_air_date;
+                    const {poster_path, vote_average, overview, id} = item;
+                    
+                    const contentEl = document.createElement('div');
+                    contentEl.classList.add('movie'); // Keep the class name for consistency
+                    contentEl.innerHTML = `
+                        <img src="${poster_path ? IMG_URL+poster_path : "http://via.placeholder.com/1080x1580" }" alt="${title}">
+            
+                        <div class="movie-info">
+                            <h3>${title}</h3>
+                            <span class="${getColor(vote_average)}">${vote_average.toFixed(1)}</span>
+                        </div>
+            
+                        <div class="overview">
+                            <h3>Overview</h3>
+                            ${overview}
+                            <br/> 
+                            <button class="know-more" id="${id}" hidden></button>
+                        </div>
+                    `;
+                    
+                    // Add click event to the entire card
+                    contentEl.addEventListener('click', () => {
+                        console.log(id);
+                        openNav(item);
+                    });
+            
+                    main.appendChild(contentEl);
+            
+                    document.getElementById(id).addEventListener('click', () => {
+                        console.log(id);
+                        openNav(item);
+                    });
+                });
+            }
+            
+            function openNav(item) {
+                let id = item.id;
+                const title = item.title || item.name;
+                
+                // Redirect to detail page with content type parameter
+                window.location.href = `moviedetail.html?id=${id}&title=${encodeURIComponent(title)}&type=${currentContentType}`;
+            }
+            
+            function getColor(vote) {
+                if(vote >= 8){
+                    return 'green'
+                } else if(vote >= 5){
+                    return "orange"
+                } else {
+                    return 'red'
+                }
+            }
+            
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+            
+                const searchTerm = search.value;
+                selectedGenre = [];
+                setGenre();
+                
+                if(searchTerm) {
+                    const searchUrl = currentContentType === 'movie' ? MOVIE_SEARCH_URL : TV_SEARCH_URL;
+                    getContent(searchUrl + '&query=' + searchTerm);
+                } else {
+                    const baseApiUrl = currentContentType === 'movie' ? MOVIE_API_URL : TV_API_URL;
+                    getContent(baseApiUrl);
+                }
+            });
+            
+            prev.addEventListener('click', () => {
+                if(prevPage > 0){
+                    pageCall(prevPage);
+                }
+            });
+            
+            next.addEventListener('click', () => {
+                if(nextPage <= totalPages){
+                    pageCall(nextPage);
+                }
+            });
+            
+            function pageCall(page){
+                let urlSplit = lastUrl.split('?');
+                let queryParams = urlSplit[1].split('&');
+                let key = queryParams[queryParams.length - 1].split('=');
+                if(key[0] != 'page'){
+                    let url = lastUrl + '&page=' + page
+                    getContent(url);
+                } else {
+                    key[1] = page.toString();
+                    let a = key.join('=');
+                    queryParams[queryParams.length - 1] = a;
+                    let b = queryParams.join('&');
+                    let url = urlSplit[0] + '?' + b;
+                    getContent(url);
+                }
+            }
+        } 
+        // If we're on the detail page, run the detail page code
+        else {
+            // Get DOM elements for the detail page
+            const videoContainer = document.getElementById('video-container');
+            const titleElement = document.getElementById('movie-title');
+            const posterContainer = document.querySelector('.movie-poster-container');
+            const infoContainer = document.querySelector('.movie-info-container');
+            const castListContainer = document.getElementById('cast-list');
+            
+            // Parse URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            const title = urlParams.get('title');
+            const contentType = urlParams.get('type') || 'movie'; // Default to movie if not specified
+            
+            // Update page title with content type
+            document.title = contentType === 'movie' ? 'Movie Details' : 'TV Show Details';
+            
+            // Set the content title
+            if (titleElement) {
+                titleElement.textContent = title || (contentType === 'movie' ? 'Movie Details' : 'TV Show Details');
+            }
+            
+            // Load all details when the page loads
+            loadDetails();
+            
+            function loadDetails() {
+                if (!id) return;
+                
+                // Fetch details based on content type
+                fetch(`${BASE_URL}/${contentType}/${id}?${API_KEY}&append_to_response=credits`)
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log('Content details:', data);
+                        
+                        // Display poster
+                        if (posterContainer) {
+                            posterContainer.innerHTML = `
+                                <img src="${data.poster_path ? IMG_URL + data.poster_path : 'http://via.placeholder.com/500x750'}" 
+                                    alt="${data.title || data.name}" class="movie-poster">
+                            `;
+                        }
+                        
+                        // Display info
+                        if (infoContainer) {
+                            // Format release/air date
+                            const releaseDate = new Date(data.release_date || data.first_air_date).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            });
+                            
+                            // Format runtime (different for movies vs TV shows)
+                            let runtimeDisplay = '';
+                            if (contentType === 'movie') {
+                                const hours = Math.floor(data.runtime / 60);
+                                const minutes = data.runtime % 60;
+                                runtimeDisplay = `${hours}h ${minutes}m`;
+                            } else {
+                                // For TV shows, show number of seasons and episodes
+                                runtimeDisplay = `${data.number_of_seasons || 0} seasons, ${data.number_of_episodes || 0} episodes`;
+                                // If episode runtime is available
+                                if (data.episode_run_time && data.episode_run_time.length > 0) {
+                                    runtimeDisplay += ` (avg. ${data.episode_run_time[0]} min per episode)`;
+                                }
+                            }
+                            
+                            // Get genres
+                            const genres = data.genres.map(genre => genre.name).join(', ');
+                            
+                            // TV show specific information
+                            let tvInfo = '';
+                            if (contentType === 'tv') {
+                                tvInfo = `
+                                    <p><strong>Status:</strong> ${data.status}</p>
+                                    <p><strong>Networks:</strong> ${data.networks?.map(n => n.name).join(', ') || 'N/A'}</p>
+                                    <p><strong>Next Episode:</strong> ${data.next_episode_to_air ? new Date(data.next_episode_to_air.air_date).toLocaleDateString() : 'N/A'}</p>
+                                `;
+                            }
+                            
+                            infoContainer.innerHTML = `
+                                <div class="rating">
+                                    <span class="${getColor(data.vote_average)}">${data.vote_average.toFixed(1)}</span>
+                                </div>
+                                <div class="movie-metadata">
+                                    <p><strong>${contentType === 'movie' ? 'Release Date' : 'First Air Date'}:</strong> ${releaseDate}</p>
+                                    <p><strong>${contentType === 'movie' ? 'Runtime' : 'Episodes'}:</strong> ${runtimeDisplay}</p>
+                                    <p><strong>Genres:</strong> ${genres}</p>
+                                    <p><strong>Language:</strong> ${data.original_language.toUpperCase()}</p>
+                                    ${tvInfo}
+                                </div>
+                                <div class="movie-overview">
+                                    <h3>Overview</h3>
+                                    <p>${data.overview}</p>
+                                </div>
+                            `;
+                        }
+                        
+                        // Display cast members
+                        if (castListContainer && data.credits && data.credits.cast) {
+                            const cast = data.credits.cast.slice(0, 8); // Display only top 8 cast members
+                            
+                            let castHTML = '';
+                            cast.forEach(person => {
+                                castHTML += `
+                                    <div class="cast-member">
+                                        <img src="${person.profile_path ? IMG_URL + person.profile_path : 'http://via.placeholder.com/150x225'}" 
+                                            alt="${person.name}" class="cast-image">
+                                        <div class="cast-details">
+                                            <h4>${person.name}</h4>
+                                            <p>${person.character}</p>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                            
+                            castListContainer.innerHTML = castHTML;
+                        }
+                        
+                        // Load the trailer after loading the details
+                        loadTrailer();
+                        loadBackdrops();
+                    })
+                    .catch(err => {
+                        console.error('Error fetching details:', err);
+                        if (infoContainer) {
+                            infoContainer.innerHTML = '<p class="error">Error loading details</p>';
+                        }
+                    });
+            }
+            
+            function loadTrailer() {
+                if (!id || !videoContainer) return;
+                
+                fetch(`${BASE_URL}/${contentType}/${id}/videos?${API_KEY}`)
+                    .then(res => res.json())
+                    .then(videoData => {
+                        console.log('Video data:', videoData);
+                        
+                        if (videoData && videoData.results.length > 0) {
+                            // First look for official trailers
+                            let trailer = videoData.results.find(video => 
+                                video.site === 'YouTube' && 
+                                (video.type === 'Trailer') && 
+                                video.name.toLowerCase().includes('trailer')
+                            );
+                            
+                            // If no official trailer found, look for any trailer
+                            if (!trailer) {
+                                trailer = videoData.results.find(video => 
+                                    video.site === 'YouTube' && 
+                                    (video.type === 'Trailer')
+                                );
+                            }
+                            
+                            // If still no trailer, just use the first YouTube video
+                            if (!trailer) {
+                                trailer = videoData.results.find(video => video.site === 'YouTube');
+                            }
+                            
+                            if (trailer) {
+                                const { name, key } = trailer;
+                                
+                                videoContainer.innerHTML = `
+                                    <div class="trailer-container">
+                                        <h2>Official Trailer</h2>
+                                        <iframe width="100%" height="480" src="https://www.youtube.com/embed/${key}" 
+                                            title="${name}" frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                            allowfullscreen>
+                                        </iframe>
+                                    </div>
+                                `;
+                            } else {
+                                videoContainer.innerHTML = '<p class="no-results">No trailer available</p>';
+                            }
+                        } else {
+                            videoContainer.innerHTML = '<p class="no-results">No trailer available</p>';
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error fetching trailer:', err);
+                        videoContainer.innerHTML = '<p class="no-results">Error loading trailer</p>';
+                    });
+            }
+
+            // Find the loadDetails function in the detail page code and add this new function below it
+        function loadBackdrops() {
+        if (!id) return;
+        
+        // Create backdrop container if it doesn't exist yet
+        if (!document.getElementById('backdrop-container')) {
+            const backdropSection = document.createElement('section');
+            backdropSection.id = 'backdrop-container';
+            backdropSection.className = 'backdrop-gallery';
+            backdropSection.innerHTML = '<h2>Backdrops</h2><div class="backdrop-grid"></div>';
+            
+            // Insert it after the trailer section
+            videoContainer.parentNode.insertBefore(backdropSection, videoContainer.nextSibling);
+        }
+        
+        const backdropGrid = document.querySelector('.backdrop-grid');
+        
+        // Fetch images
+        fetch(`${BASE_URL}/${contentType}/${id}/images?${API_KEY}`)
+            .then(res => res.json())
+            .then(data => {
+                console.log('Backdrop data:', data);
+                
+                if (data && data.backdrops && data.backdrops.length > 0) {
+                    // Limit to showing maximum 6 backdrops
+                    const backdrops = data.backdrops.slice(0, 6);
+                    
+                    let backdropHTML = '';
+                    backdrops.forEach(backdrop => {
+                        backdropHTML += `
+                            <div class="backdrop-item">
+                                <img src="${IMG_URL}${backdrop.file_path}" 
+                                    alt="Backdrop" 
+                                    class="backdrop-image"
+                                    loading="lazy">
+                            </div>
+                        `;
+                    });
+                    
+                    backdropGrid.innerHTML = backdropHTML;
+                    
+                    // Add click functionality to view backdrops in larger size
+                    document.querySelectorAll('.backdrop-item').forEach(item => {
+                        item.addEventListener('click', function() {
+                            const imgSrc = this.querySelector('img').src;
+                            // Create a modal to show full size backdrop
+                            const modal = document.createElement('div');
+                            modal.className = 'backdrop-modal';
+                            modal.innerHTML = `
+                                <div class="backdrop-modal-content">
+                                    <span class="backdrop-close">&times;</span>
+                                    <img src="${imgSrc.replace('/w500/', '/original/')}" alt="Backdrop">
+                                </div>
+                            `;
+                            document.body.appendChild(modal);
+                            
+                            // Close modal when clicking the × or outside the image
+                            modal.querySelector('.backdrop-close').addEventListener('click', () => {
+                                document.body.removeChild(modal);
+                            });
+                            modal.addEventListener('click', (e) => {
+                                if (e.target === modal) {
+                                    document.body.removeChild(modal);
+                                }
+                            });
+                        });
+                    });
+                } else {
+                    backdropGrid.innerHTML = '<p class="no-results">No backdrops available</p>';
+                }
+            })
+            .catch(err => {
+                console.error('Error fetching backdrops:', err);
+                backdropGrid.innerHTML = '<p class="error">Error loading backdrops</p>';
+            });
+        }
+            
+            function getColor(vote) {
+                if(vote >= 8){
+                    return 'green'
+                }else if(vote >= 5){
+                    return "orange"
+                }else{
+                    return 'red'
+                }
+            }
         }
     </script>
 <footer class="footer">
